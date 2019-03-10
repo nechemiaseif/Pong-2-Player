@@ -30,13 +30,13 @@ enum Planet {
 public class Server extends JFrame 
 {
    private JTextField enterField; // inputs message from user
-   private JPanel displayArea; // display information to user
-   private ObjectOutputStream output; // output stream to client
-   private ObjectInputStream input; // input stream from client
-   private ServerSocket server; // server socket
-   private Socket connection; // connection to client
-   private int counter = 1; // counter of number of connections
- private Color currentColor = Color.BLACK;
+    private JPanel displayArea; // display information to user
+    private ObjectOutputStream output; // output stream to client
+    private ObjectInputStream input; // input stream from client
+    private ServerSocket server; // server socket
+    private Socket connection; // connection to client
+    private int counter = 1; // counter of number of connections
+    private Color currentColor = Color.BLACK;
    // set up GUI
    public Server()
    {

@@ -12,7 +12,7 @@ public class ClientTest
 
       // if no command line args
       if ( args.length == 0 )
-         application = new Client( "10.0.2.15" ); // connect to localhost
+         application = new Client( "192.168.1.10" ); // connect to localhost
       else
          application = new Client( args[ 0 ] ); // use args to connect
 
