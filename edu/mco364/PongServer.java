@@ -14,7 +14,7 @@ public class PongServer extends JFrame {
 
     private JLabel playerScoreLabel, computerScoreLabel,
             highScoreLabel;
-    private Point computerPaddlePosition, playerPaddlePosition,
+    private Point opponentPaddlePosition, playerPaddlePosition,
             ball, delta;
     private int playerScore, computerScore, highScore;
     private boolean playerPaddleMovingUp;
@@ -31,14 +31,14 @@ public class PongServer extends JFrame {
 
     public PongServer() {
 
-        super("Pong 1.1");
+        super("Pong Server");
 
         setVisible(true);
         setSize(700, 500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         playerPaddlePosition = new Point(620, 200);
-        computerPaddlePosition = new Point(70, 200);
+        opponentPaddlePosition = new Point(70, 200);
         ball = new Point(335, 235);
         delta = new Point(5, 5);
 
@@ -56,13 +56,14 @@ public class PongServer extends JFrame {
 
         add(scorePanel, BorderLayout.SOUTH);
 
-        JButton startButton = new JButton("POOP");
+        JButton startButton = new JButton("START");
 
         add(startButton, BorderLayout.NORTH);
 
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                sendData(e.getActionCommand());
                 play();
             }
         });
@@ -135,13 +136,11 @@ public class PongServer extends JFrame {
             {
                 Object o = input.readObject();
                 if (o instanceof Point) {
-                    Point p = (Point) o; // read new message
-                    Graphics g = displayArea.getGraphics();
-                    g.setColor(currentColor);
-                    g.fillOval(p.x, p.y, 30, 30);
+                    opponentPaddlePosition.setLocation((Point) o);
+                    //repaint();
                 }
-                else if (o instanceof Color) {
-                    currentColor = (Color) o;
+                else if(o instanceof String && o.equals("START")) {
+                    play();
                 }
             } // end try
             catch ( ClassNotFoundException classNotFoundException )
@@ -219,7 +218,6 @@ public class PongServer extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 updateBall();
                 updatePlayerPaddle();
-                updateComputerPaddle();
                 repaint();
             }
         });
@@ -235,19 +233,19 @@ public class PongServer extends JFrame {
         });
 
         requestFocusInWindow();
-        addKeyListener(new KeyListener() {
+        addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 playerPaddleMovingUp
                         = e.getKeyCode() == VK_UP ? true : false;
             }
 
-            @Override
+/*            @Override
             public void keyTyped(KeyEvent e) {
             }
             @Override
             public void keyReleased(KeyEvent e) {
-            }
+            }*/
         });
 
     }
@@ -266,9 +264,9 @@ public class PongServer extends JFrame {
             delta.x = -delta.x;
             playerScore++;
         }
-        if (ball.x == computerPaddlePosition.x + 10
-                && ball.y >= computerPaddlePosition.y
-                && ball.y <= computerPaddlePosition.y + 60) {
+        if (ball.x == opponentPaddlePosition.x + 10
+                && ball.y >= opponentPaddlePosition.y
+                && ball.y <= opponentPaddlePosition.y + 60) {
             delta.x = -delta.x;
             computerScore++;
         }
@@ -296,21 +294,9 @@ public class PongServer extends JFrame {
                 playerPaddleMovingUp = true;
             }
         }
-        sendData(playerPaddlePosition);
+        sendData(playerPaddlePosition.getLocation());
     }
 
-    private void updateComputerPaddle() {
-        if (computerPaddlePosition.y < 50) {
-            computerPaddlePosition
-                    .setLocation(computerPaddlePosition.x, 50);
-        } else if (ball.y >= 390 && ball.y <= 450) {
-            computerPaddlePosition
-                    .setLocation(computerPaddlePosition.x, 390);
-        } else {
-            computerPaddlePosition
-                    .setLocation(computerPaddlePosition.x, ball.y);
-        }
-    }
 
     private void restartGame() {
         ball.x = 335;
@@ -341,8 +327,8 @@ public class PongServer extends JFrame {
         g.drawRect(50, 50, 600, 400);
         g.fillRect(playerPaddlePosition.x,
                 playerPaddlePosition.y, 10, 60);
-        g.fillRect(computerPaddlePosition.x,
-                computerPaddlePosition.y, 10, 60);
+        g.fillRect(opponentPaddlePosition.x,
+                opponentPaddlePosition.y, 10, 60);
         g.fillOval(ball.x, ball.y, 15, 15);
 
     }

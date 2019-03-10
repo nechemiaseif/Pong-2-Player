@@ -3,20 +3,15 @@
 package edu.mco364;
 
         import javax.swing.*;
-        import java.awt.event.ActionEvent;
-        import java.awt.event.ActionListener;
+        import java.awt.event.*;
         import java.awt.BorderLayout;
         import java.awt.GridLayout;
         import java.awt.Graphics;
         import java.awt.Point;
         import java.awt.Color;
-        import java.awt.event.MouseWheelEvent;
-        import java.awt.event.MouseWheelListener;
-        import java.awt.event.KeyEvent;
-        import java.awt.event.KeyListener;
+
         import static java.awt.event.KeyEvent.VK_UP;
-        import java.awt.event.WindowAdapter;
-        import java.awt.event.WindowEvent;
+
         import java.io.*;
         import java.net.InetAddress;
         import java.net.Socket;
@@ -26,7 +21,7 @@ public class PongClient extends JFrame {
 
     private JLabel playerScoreLabel, computerScoreLabel,
             highScoreLabel;
-    private Point computerPaddlePosition, playerPaddlePosition,
+    private Point opponentPaddlePosition, playerPaddlePosition,
             ball, delta;
     private int playerScore, computerScore, highScore;
     private boolean playerPaddleMovingUp;
@@ -43,7 +38,7 @@ public class PongClient extends JFrame {
 
     public PongClient(String host) {
 
-        super("Pong 1.1");
+        super("Pong Client");
 
         pongServer = host;
 
@@ -51,8 +46,8 @@ public class PongClient extends JFrame {
         setSize(700, 500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        playerPaddlePosition = new Point(620, 200);
-        computerPaddlePosition = new Point(70, 200);
+        playerPaddlePosition = new Point(70, 200);
+        opponentPaddlePosition = new Point(620, 200);
         ball = new Point(335, 235);
         delta = new Point(5, 5);
 
@@ -77,6 +72,7 @@ public class PongClient extends JFrame {
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                sendData(e.getActionCommand());
                 play();
             }
         });
@@ -137,27 +133,24 @@ public class PongClient extends JFrame {
         // enable enterField so client user can send messages
         setTextFieldEditable( true );
 
-        do // process messages sent from server
+        do
         {
-            try // read message and display it
+            try
             {
                 Object o = input.readObject();
                 if (o instanceof Point) {
-                    Point p = (Point) o; // read new message
-                    Graphics g = getGraphics();
-                    //g.setColor(currentColor);
-                    g.fillRect(p.x, p.y, 10, 60);
-                    repaint();
+                    opponentPaddlePosition.setLocation((Point) o);
+                    //repaint();
                 }
-                //else if (o instanceof Color) {
-                    //currentColor = (Color) o;
-                //}
+                else if(o instanceof String && o.equals("START")) {
+                    play();
+                }
 
-            } // end try
+            }
             catch ( ClassNotFoundException classNotFoundException )
             {
                 displayMessage( "\nUnknown object type received" );
-            } // end catch
+            }
 
         } while (true);
     } // end method processConnection
@@ -231,7 +224,7 @@ public class PongClient extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 updateBall();
                 updatePlayerPaddle();
-                updateOpponentPaddle();
+                //updateOpponentPaddle();
                 repaint();
             }
         });
@@ -247,18 +240,11 @@ public class PongClient extends JFrame {
         });
 
         requestFocusInWindow();
-        addKeyListener(new KeyListener() {
+        addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 playerPaddleMovingUp
                         = e.getKeyCode() == VK_UP ? true : false;
-            }
-
-            @Override
-            public void keyTyped(KeyEvent e) {
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {
             }
         });
 
@@ -272,15 +258,15 @@ public class PongClient extends JFrame {
         if (ball.y <= 50 || ball.y >= 435) {
             delta.y = -delta.y;
         }
-        if (ball.x == playerPaddlePosition.x - 15
+        if (ball.x == playerPaddlePosition.x + 10
                 && ball.y >= playerPaddlePosition.y
                 && ball.y <= playerPaddlePosition.y + 60) {
             delta.x = -delta.x;
             playerScore++;
         }
-        if (ball.x == computerPaddlePosition.x + 10
-                && ball.y >= computerPaddlePosition.y
-                && ball.y <= computerPaddlePosition.y + 60) {
+        if (ball.x == opponentPaddlePosition.x - 15
+                && ball.y >= opponentPaddlePosition.y
+                && ball.y <= opponentPaddlePosition.y + 60) {
             delta.x = -delta.x;
             computerScore++;
         }
@@ -309,20 +295,7 @@ public class PongClient extends JFrame {
             }
         }
 
-        sendData(playerPaddlePosition);
-    }
-
-    private void updateOpponentPaddle() {
-        if (computerPaddlePosition.y < 50) {
-            computerPaddlePosition
-                    .setLocation(computerPaddlePosition.x, 50);
-        } else if (ball.y >= 390 && ball.y <= 450) {
-            computerPaddlePosition
-                    .setLocation(computerPaddlePosition.x, 390);
-        } else {
-            computerPaddlePosition
-                    .setLocation(computerPaddlePosition.x, ball.y);
-        }
+        sendData(playerPaddlePosition.getLocation());
     }
 
     private void restartGame() {
@@ -354,8 +327,8 @@ public class PongClient extends JFrame {
         g.drawRect(50, 50, 600, 400);
         g.fillRect(playerPaddlePosition.x,
                 playerPaddlePosition.y, 10, 60);
-        g.fillRect(computerPaddlePosition.x,
-                computerPaddlePosition.y, 10, 60);
+        g.fillRect(opponentPaddlePosition.x,
+                opponentPaddlePosition.y, 10, 60);
         g.fillOval(ball.x, ball.y, 15, 15);
 
     }
