@@ -164,6 +164,10 @@ public class Pong extends JFrame{
         return this.playerPaddlePosition.getLocation();
     }
 
+    void setBallPosition(Point ballPosition) {
+        this.ball.setLocation(ballPosition.getLocation());
+    }
+
     Point getBallPosition() {
         return this.ball.getLocation();
     }

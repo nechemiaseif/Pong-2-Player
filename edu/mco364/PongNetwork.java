@@ -31,8 +31,11 @@ public class PongNetwork extends Pong {
             try
             {
                 Object o = input.readObject();
-                if (o instanceof Point) {
+                if (o instanceof Point && ((Point) o).x == 620 || ((Point) o).x == 70) {
                     super.setOpponentPaddlePosition((Point) o);
+                }
+                else if(o instanceof Point) {
+                    super.setBallPosition((Point) o);
                 }
                 else if(o instanceof String && o.equals("START")) {
                     System.out.println("String: " + o);
