@@ -6,9 +6,8 @@ public class ServerMain {
 
     public static void main( String[] args )
     {
-        PongServer application = new PongServer(); // create server
+        PongServer application = new PongServer();
         application.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        application.runServer(); // run server application
-    } // end main
-
+        application.runServer();
+    }
 }

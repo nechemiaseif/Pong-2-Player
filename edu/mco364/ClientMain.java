@@ -6,16 +6,15 @@ public class ClientMain {
 
     public static void main( String[] args )
     {
-        PongClient application; // declare client application
+        PongClient application;
 
-        // if no command line args
         if ( args.length == 0 )
-            application = new PongClient( "192.168.1.10" ); // connect to localhost
+            application = new PongClient( "192.168.1.10" );
         else
-            application = new PongClient( args[ 0 ] ); // use args to connect
+            application = new PongClient( args[ 0 ] );
 
         application.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        application.runClient(); // run client application
-    } // end main
+        application.runClient();
+    }
 
 }
