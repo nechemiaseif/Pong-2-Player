@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.sql.Time;
+import java.time.LocalTime;
 import java.util.Properties;
 
 import static java.awt.event.KeyEvent.VK_UP;
@@ -84,6 +86,7 @@ public class Pong extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 updateBall();
                 updatePlayerPaddle();
+                updateScoreLabels();
                 repaint();
             }
         });
@@ -109,7 +112,7 @@ public class Pong extends JFrame{
 
     }
 
-    private void updateBall() {
+    void updateBall() {
 
         if (ball.x >= 635 || ball.x <= 50) {
             restartGame();
@@ -131,8 +134,6 @@ public class Pong extends JFrame{
         }
         ball.x += delta.x;
         ball.y += delta.y;
-
-        updateScoreLabels();
     }
 
     void updatePlayerPaddle() {
@@ -161,6 +162,10 @@ public class Pong extends JFrame{
 
     Point getPlayerPaddlePosition() {
         return this.playerPaddlePosition.getLocation();
+    }
+
+    Point getBallPosition() {
+        return this.ball.getLocation();
     }
 
     private void restartGame() {

@@ -10,6 +10,7 @@ public class PongNetwork extends Pong {
 
     private ObjectOutputStream output;
     private ObjectInputStream input;
+    private boolean clickedStart;
 
     public PongNetwork(String title) {
         super(title);
@@ -31,9 +32,10 @@ public class PongNetwork extends Pong {
             {
                 Object o = input.readObject();
                 if (o instanceof Point) {
-                    setOpponentPaddlePosition((Point) o);
+                    super.setOpponentPaddlePosition((Point) o);
                 }
                 else if(o instanceof String && o.equals("START")) {
+                    System.out.println("String: " + o);
                     super.play();
                 }
             }
@@ -74,8 +76,16 @@ public class PongNetwork extends Pong {
         }
     }
 
+    void updateBall() {
+        if(this.clickedStart) {
+            super.updateBall();
+            sendData(super.getBallPosition());
+        }
+    }
+
     void clickStartButton() {
         super.clickStartButton();
+        this.clickedStart = true;
         sendData(super.getActionCommand());
     }
 
