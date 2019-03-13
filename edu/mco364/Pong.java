@@ -20,11 +20,24 @@ public class Pong extends JFrame{
     private boolean isServer;
     private String startButtonActionCommand;
 
+    final int FRAME_WIDTH = 700;
+    final int FRAME_HEIGHT = 500;
+    final int RIGHT_PLAY_AREA_BOUNDARY_X_COORD = 650;
+    final int LEFT_PLAY_AREA_BOUNDARY_X_COORD  = 50;
+    final int UPPER_PLAY_AREA_BOUNDARY_Y_COORD = 50;
+    final int LOWER_PLAY_AREA_BOUNDARY_Y_COORD = 450;
+    final int BALL_WIDTH = 15;
+    final int BALL_HEIGHT = 15;
+    final int PADDLE_WIDTH = 10;
+    final int PADDLE_HEIGHT = 60;
+    final int PLAY_AREA_CENTER_X = FRAME_WIDTH / 2;
+    final int PLAY_AREA_CENTER_Y = (FRAME_HEIGHT / 2) - UPPER_PLAY_AREA_BOUNDARY_Y_COORD;
+
     public Pong(String title) {
 
         super(title);
         setVisible(true);
-        setSize(700, 500);
+        setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         isServer = title.equals("Pong Server") ? true : false;
@@ -33,7 +46,7 @@ public class Pong extends JFrame{
                 ? new Point(620, 200) : new Point(70, 200);
         opponentPaddlePosition = isServer
                 ? new Point(70, 200): new Point(620, 200);
-        ball = new Point(335, 235);
+        ball = new Point(PLAY_AREA_CENTER_X, PLAY_AREA_CENTER_Y);
         delta = new Point(5, 5);
 
         leftScoreLabel = new JLabel();
@@ -84,6 +97,7 @@ public class Pong extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 updateBall();
                 updatePlayerPaddle();
+                updateScores();
                 updateScoreLabels();
                 repaint();
             }
@@ -94,8 +108,7 @@ public class Pong extends JFrame{
         addMouseWheelListener(new MouseWheelListener() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
-                playerPaddleMovingUp
-                        = e.getWheelRotation() < 0 ? true : false;
+                playerPaddleMovingUp = e.getWheelRotation() < 0;
             }
         });
 
@@ -103,52 +116,65 @@ public class Pong extends JFrame{
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                playerPaddleMovingUp
-                        = e.getKeyCode() == VK_UP ? true : false;
+                playerPaddleMovingUp = e.getKeyCode() == VK_UP;
             }
         });
-
     }
 
     void updateBall() {
 
-        if (ball.x >= 635 || ball.x <= 50) {
+        if (ball.x >= RIGHT_PLAY_AREA_BOUNDARY_X_COORD - BALL_WIDTH
+                || ball.x <= LEFT_PLAY_AREA_BOUNDARY_X_COORD) {
             restartGame();
         }
-        if (ball.y <= 50 || ball.y >= 435) {
+        if (ball.y <= UPPER_PLAY_AREA_BOUNDARY_Y_COORD
+                || ball.y >= LOWER_PLAY_AREA_BOUNDARY_Y_COORD - BALL_HEIGHT) {
             delta.y = -delta.y;
         }
-        if (ball.x == playerPaddlePosition.x + (isServer? -15 : 10)
+        if (ball.x == playerPaddlePosition.x + (isServer? -BALL_WIDTH : PADDLE_WIDTH)
                 && ball.y >= playerPaddlePosition.y
-                && ball.y <= playerPaddlePosition.y + 60) {
+                && ball.y <= playerPaddlePosition.y + PADDLE_HEIGHT) {
             delta.x = -delta.x;
-            playerScore++;
         }
-        if (ball.x == opponentPaddlePosition.x + (isServer? 10 : -15)
+        if (ball.x == opponentPaddlePosition.x + (isServer? PADDLE_WIDTH : -BALL_WIDTH)
                 && ball.y >= opponentPaddlePosition.y
-                && ball.y <= opponentPaddlePosition.y + 60) {
+                && ball.y <= opponentPaddlePosition.y + PADDLE_HEIGHT) {
             delta.x = -delta.x;
-            opponentScore++;
         }
         ball.x += delta.x;
         ball.y += delta.y;
+    }
+
+    void updateScores() {
+        if (ball.x == playerPaddlePosition.x + (isServer? -BALL_WIDTH : PADDLE_WIDTH)
+                && ball.y >= playerPaddlePosition.y
+                && ball.y <= playerPaddlePosition.y + PADDLE_HEIGHT) {
+            playerScore++;
+        }
+        if (ball.x == opponentPaddlePosition.x + (isServer? PADDLE_WIDTH : -BALL_WIDTH)
+                && ball.y >= opponentPaddlePosition.y
+                && ball.y <= opponentPaddlePosition.y + PADDLE_HEIGHT) {
+            opponentScore++;
+        }
     }
 
     void updatePlayerPaddle() {
         if (playerPaddleMovingUp) {
             playerPaddlePosition
                     .setLocation(playerPaddlePosition.x,
-                            playerPaddlePosition.y > 50 ?
-                                    playerPaddlePosition.y - 5 : 50);
-            if (playerPaddlePosition.y == 50) {
+                            playerPaddlePosition.y > UPPER_PLAY_AREA_BOUNDARY_Y_COORD
+                                    ? playerPaddlePosition.y - 5
+                                    : UPPER_PLAY_AREA_BOUNDARY_Y_COORD);
+            if (playerPaddlePosition.y == UPPER_PLAY_AREA_BOUNDARY_Y_COORD) {
                 playerPaddleMovingUp = false;
             }
         } else {
             playerPaddlePosition
                     .setLocation(playerPaddlePosition.x,
-                            playerPaddlePosition.y < 390 ?
-                                    playerPaddlePosition.y + 5 : 390);
-            if (playerPaddlePosition.y == 390) {
+                            playerPaddlePosition.y < LOWER_PLAY_AREA_BOUNDARY_Y_COORD - PADDLE_HEIGHT
+                                    ? playerPaddlePosition.y + 5
+                                    : LOWER_PLAY_AREA_BOUNDARY_Y_COORD - PADDLE_HEIGHT);
+            if (playerPaddlePosition.y == LOWER_PLAY_AREA_BOUNDARY_Y_COORD - PADDLE_HEIGHT) {
                 playerPaddleMovingUp = true;
             }
         }
@@ -171,8 +197,8 @@ public class Pong extends JFrame{
     }
 
     private void restartGame() {
-        ball.x = 335;
-        ball.y = 235;
+        ball.x = PLAY_AREA_CENTER_X;
+        ball.y = PLAY_AREA_CENTER_Y;
         playerScore = 0;
         opponentScore = 0;
         highScore = getHighScore();
@@ -202,10 +228,10 @@ public class Pong extends JFrame{
         g.setColor(Color.BLACK);
         g.drawRect(50, 50, 600, 400);
         g.fillRect(playerPaddlePosition.x,
-                playerPaddlePosition.y, 10, 60);
+                playerPaddlePosition.y, PADDLE_WIDTH, PADDLE_HEIGHT);
         g.fillRect(opponentPaddlePosition.x,
-                opponentPaddlePosition.y, 10, 60);
-        g.fillOval(ball.x, ball.y, 15, 15);
+                opponentPaddlePosition.y, PADDLE_WIDTH, PADDLE_HEIGHT);
+        g.fillOval(ball.x, ball.y, BALL_WIDTH, BALL_HEIGHT);
 
     }
 
