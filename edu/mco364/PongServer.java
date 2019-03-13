@@ -13,38 +13,27 @@ public class PongServer extends PongNetwork {
         super("Pong Server");
     }
 
-    public void runServer()
-    {
-        try
-        {
-            server = new ServerSocket( 12345, 100 );
+    public void runServer() {
+        try {
+            server = new ServerSocket(12345, 100);
 
-            while ( true )
-            {
-                try
-                {
+            while (true) {
+                try {
                     this.waitForConnection();
                     super.getStreams(connection);
                     super.processConnection();
-                }
-                catch ( EOFException eofException )
-                {
+                } catch (EOFException eofException) {
                     eofException.printStackTrace();
-                }
-                finally
-                {
+                } finally {
                     super.closeConnection(connection);
                 }
             }
-        }
-        catch ( IOException ioException )
-        {
+        } catch (IOException ioException) {
             ioException.printStackTrace();
         }
     }
 
-    private void waitForConnection() throws IOException
-    {
+    private void waitForConnection() throws IOException {
         connection = server.accept();
     }
 

@@ -36,9 +36,9 @@ public class Pong extends JFrame {
     public Pong(String title) {
 
         super(title);
-        setVisible(true);
-        setSize(FRAME_WIDTH, FRAME_HEIGHT);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.setVisible(true);
+        this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         isServer = title.equals("Pong Server") ? true : false;
 
@@ -63,11 +63,11 @@ public class Pong extends JFrame {
         scorePanel.add(highScoreLabel);
         scorePanel.add(rightScoreLabel);
 
-        add(scorePanel, BorderLayout.SOUTH);
+        this.add(scorePanel, BorderLayout.SOUTH);
 
         JButton startButton = new JButton("START");
 
-        add(startButton, BorderLayout.NORTH);
+        this.add(startButton, BorderLayout.NORTH);
 
         startButton.addActionListener(new ActionListener() {
             @Override
@@ -105,7 +105,7 @@ public class Pong extends JFrame {
 
         timer.start();
 
-        addMouseWheelListener(new MouseWheelListener() {
+        this.addMouseWheelListener(new MouseWheelListener() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
                 playerPaddleMovingUp = e.getWheelRotation() < 0;
@@ -113,7 +113,7 @@ public class Pong extends JFrame {
         });
 
         requestFocusInWindow();
-        addKeyListener(new KeyAdapter() {
+        this.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 playerPaddleMovingUp = e.getKeyCode() == VK_UP;
@@ -210,7 +210,6 @@ public class Pong extends JFrame {
     }
 
     private void updateScoreLabels() {
-
         String playerScoreText = "Player: " + playerScore;
         String opponentScoreText = "Opponent: " + opponentScore;
 
@@ -240,8 +239,7 @@ public class Pong extends JFrame {
     }
 
     private void setWindowEvents() {
-
-        addWindowListener(new WindowAdapter() {
+        this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
                 Properties appProps = new Properties();

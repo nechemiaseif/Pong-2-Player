@@ -16,18 +16,15 @@ public class PongNetwork extends Pong {
         super(title);
     }
 
-    void getStreams(Socket sock) throws IOException
-    {
-        output = new ObjectOutputStream(sock.getOutputStream() );
+    void getStreams(Socket sock) throws IOException {
+        output = new ObjectOutputStream(sock.getOutputStream());
         output.flush();
 
-        input = new ObjectInputStream(sock.getInputStream() );
+        input = new ObjectInputStream(sock.getInputStream());
     }
 
-    void processConnection() throws IOException
-    {
-        do
-        {
+    void processConnection() throws IOException {
+        do {
             try {
                 Object o = input.readObject();
                 if (o instanceof Point) {
@@ -36,60 +33,51 @@ public class PongNetwork extends Pong {
                     } else {
                         super.setBallPosition((Point) o);
                     }
-                }
-                else if(o instanceof String && o.equals("START")) {
+                } else if (o instanceof String && o.equals("START")) {
                     super.play();
                 }
-            }
-            catch ( ClassNotFoundException classNotFoundException )
-            {
+            } catch (ClassNotFoundException classNotFoundException) {
                 classNotFoundException.printStackTrace();
             }
-
-        } while ( true );
+        } while (true);
     }
 
-    void closeConnection(Socket sock)
-    {
-        try
-        {
+    void closeConnection(Socket sock) {
+        try {
             output.close();
             input.close();
             sock.close();
-        }
-        catch ( IOException ioException )
-        {
+        } catch (IOException ioException) {
             ioException.printStackTrace();
         }
     }
 
-    void sendData( Object o )
-    {
-        try
-        {
-            output.writeObject( o );
+    void sendData(Object o) {
+        try {
+            output.writeObject(o);
             output.flush();
-        }
-        catch ( IOException ioException )
-        {
+        } catch (IOException ioException) {
             ioException.printStackTrace();
         }
     }
 
+    @Override
     void updateBall() {
-        if(this.clickedStart) {
+        if (this.clickedStart) {
             super.updateBall();
             sendData(super.getBallPosition());
         }
     }
 
+    @Override
     void clickStartButton() {
         super.clickStartButton();
         this.clickedStart = true;
         sendData(super.getActionCommand());
     }
 
-    void updatePlayerPaddle(){
+    @Override
+    void updatePlayerPaddle() {
         super.updatePlayerPaddle();
         sendData(super.getPlayerPaddlePosition());
     }
