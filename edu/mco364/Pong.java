@@ -21,17 +21,17 @@ public class Pong extends JFrame {
     private String startButtonActionCommand;
 
     final int FRAME_WIDTH = 700;
-    final int FRAME_HEIGHT = 500;
+    final int FRAME_HEIGHT = 550;
     final int RIGHT_PLAY_AREA_BOUNDARY_X_COORD = 650;
     final int LEFT_PLAY_AREA_BOUNDARY_X_COORD = 50;
-    final int UPPER_PLAY_AREA_BOUNDARY_Y_COORD = 50;
-    final int LOWER_PLAY_AREA_BOUNDARY_Y_COORD = 450;
+    final int UPPER_PLAY_AREA_BOUNDARY_Y_COORD = 100;
+    final int LOWER_PLAY_AREA_BOUNDARY_Y_COORD = 500;
     final int BALL_WIDTH = 15;
     final int BALL_HEIGHT = 15;
     final int PADDLE_WIDTH = 10;
     final int PADDLE_HEIGHT = 60;
     final int PLAY_AREA_CENTER_X = FRAME_WIDTH / 2;
-    final int PLAY_AREA_CENTER_Y = (FRAME_HEIGHT / 2) - UPPER_PLAY_AREA_BOUNDARY_Y_COORD;
+    final int PLAY_AREA_CENTER_Y = FRAME_HEIGHT/ 2;
 
     public Pong(String title) {
 
@@ -43,9 +43,11 @@ public class Pong extends JFrame {
         isServer = title.equals("Pong Server") ? true : false;
 
         playerPaddlePosition = isServer
-                ? new Point(620, 200) : new Point(70, 200);
+                ? new Point(RIGHT_PLAY_AREA_BOUNDARY_X_COORD - PADDLE_WIDTH - 20, PLAY_AREA_CENTER_Y)
+                : new Point(LEFT_PLAY_AREA_BOUNDARY_X_COORD + 20, PLAY_AREA_CENTER_Y);
         opponentPaddlePosition = isServer
-                ? new Point(70, 200) : new Point(620, 200);
+                ? new Point(LEFT_PLAY_AREA_BOUNDARY_X_COORD + 20, PLAY_AREA_CENTER_Y)
+                : new Point(RIGHT_PLAY_AREA_BOUNDARY_X_COORD - PADDLE_WIDTH - 20, PLAY_AREA_CENTER_Y);
         ball = new Point(PLAY_AREA_CENTER_X, PLAY_AREA_CENTER_Y);
         delta = new Point(5, 5);
 
@@ -229,7 +231,7 @@ public class Pong extends JFrame {
     public void paint(Graphics g) {
         super.paint(g);
         g.setColor(Color.BLACK);
-        g.drawRect(50, 50, 600, 400);
+        g.drawRect(50, 100, 600, 400);
         g.fillRect(playerPaddlePosition.x,
                 playerPaddlePosition.y, PADDLE_WIDTH, PADDLE_HEIGHT);
         g.fillRect(opponentPaddlePosition.x,
