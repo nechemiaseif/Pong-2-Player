@@ -4,8 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.sql.Time;
-import java.time.LocalTime;
 import java.util.Properties;
 
 import static java.awt.event.KeyEvent.VK_UP;

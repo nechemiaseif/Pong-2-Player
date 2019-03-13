@@ -1,5 +1,3 @@
-// Nechemia Seif - HW 5 - Pong 1.1
-
 package edu.mco364;
 
 import java.io.*;
@@ -12,7 +10,7 @@ public class PongClient extends PongNetwork {
     private Socket client;
 
 
-    public PongClient(String host) { // TODO: ctor with param
+    public PongClient(String host) {
 
         super("Pong Client");
         pongServer = host;
@@ -27,7 +25,7 @@ public class PongClient extends PongNetwork {
         }
         catch ( EOFException eofException )
         {
-            // TODO: display message
+            eofException.printStackTrace();
         }
         catch ( IOException ioException )
         {

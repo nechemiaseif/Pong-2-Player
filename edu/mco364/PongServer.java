@@ -29,7 +29,7 @@ public class PongServer extends PongNetwork {
                 }
                 catch ( EOFException eofException )
                 {
-                    // TODO: display message
+                    eofException.printStackTrace();
                 }
                 finally
                 {

@@ -38,13 +38,12 @@ public class PongNetwork extends Pong {
                     }
                 }
                 else if(o instanceof String && o.equals("START")) {
-                    System.out.println("String: " + o); // TODO: Delete
                     super.play();
                 }
             }
             catch ( ClassNotFoundException classNotFoundException )
             {
-                //displayMessage( "\nUnknown object type received" );
+                classNotFoundException.printStackTrace();
             }
 
         } while ( true );
@@ -52,8 +51,6 @@ public class PongNetwork extends Pong {
 
     void closeConnection(Socket sock)
     {
-        //displayMessage( "\nTerminating connection\n" );
-
         try
         {
             output.close();
@@ -75,7 +72,7 @@ public class PongNetwork extends Pong {
         }
         catch ( IOException ioException )
         {
-            //TODO: write message
+            ioException.printStackTrace();
         }
     }
 

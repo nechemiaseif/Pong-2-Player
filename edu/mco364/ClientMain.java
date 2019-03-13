@@ -1,7 +1,5 @@
 package edu.mco364;
 
-import javax.swing.JFrame;
-
 public class ClientMain {
 
     public static void main( String[] args )
@@ -9,11 +7,10 @@ public class ClientMain {
         PongClient application;
 
         if ( args.length == 0 )
-            application = new PongClient( "192.168.1.10" );
+            application = new PongClient( "192.168.1.3" );
         else
             application = new PongClient( args[ 0 ] );
 
-        application.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         application.runClient();
     }
 
