@@ -1,1 +1,1 @@
-2-play game of Pong using Client-Server model.
+2-player game of Pong using Client-Server model.
